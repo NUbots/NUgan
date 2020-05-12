@@ -117,17 +117,13 @@ class UAGGANModel(BaseModel):
         AtoB = self.opt.direction == 'AtoB'
         self.real_A = input['A' if AtoB else 'B'].to(self.device)
         self.real_B = input['B' if AtoB else 'A'].to(self.device)
+        self.attention = input['ATT'].to(self.device)
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
         # G(A) -> B
-        self.att_A = self.real_A
-        for y in xrange(self.att_A.size[1]):
-            for x in xrange(self.att_A.size[0]):
-                if pixdata[x, y] != (0, 0, 0, 255):
-                    pixdata[x, y] = (255, 255, 255, 255)
-
+        self.att_A = self.attention
         self.fake_B = self.netG_img_A(self.real_A)
         if not self.isTrain:
             self.att_A *= (self.att_A>self.opt.thresh).float()
@@ -146,12 +142,7 @@ class UAGGANModel(BaseModel):
         # cycle G(G(B)) -> B
         self.cycle_att_A = self.masked_fake_A
 
-        self.cycle_fake_B = self.real_A
-
-        for y in xrange(self.cycle_fake_B.size[1]):
-            for x in xrange(self.cycle_fake_B.size[0]):
-                if pixdata[x, y] != (0, 0, 0, 255):
-                    pixdata[x, y] = (255, 255, 255, 255)
+        self.cycle_fake_B = self.netG_img_A(self.masked_fake_A)
 
         self.cycle_masked_fake_B = self.cycle_fake_B*self.cycle_att_A + self.masked_fake_A*(1-self.cycle_att_A)
 
