@@ -122,7 +122,12 @@ class UAGGANModel(BaseModel):
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
         # G(A) -> B
-        self.att_A = self.netG_att_A(self.real_A)
+        self.att_A = self.real_A
+        for y in xrange(self.att_A.size[1]):
+            for x in xrange(self.att_A.size[0]):
+                if pixdata[x, y] != (0, 0, 0, 255):
+                    pixdata[x, y] = (255, 255, 255, 255)
+
         self.fake_B = self.netG_img_A(self.real_A)
         if not self.isTrain:
             self.att_A *= (self.att_A>self.opt.thresh).float()
@@ -139,8 +144,15 @@ class UAGGANModel(BaseModel):
         self.cycle_fake_A = self.netG_img_B(self.masked_fake_B)
         self.cycle_masked_fake_A = self.cycle_fake_A*self.cycle_att_B + self.masked_fake_B*(1-self.cycle_att_B)
         # cycle G(G(B)) -> B
-        self.cycle_att_A = self.netG_att_A(self.masked_fake_A)
-        self.cycle_fake_B = self.netG_img_A(self.masked_fake_A)
+        self.cycle_att_A = self.masked_fake_A
+
+        self.cycle_fake_B = self.real_A
+
+        for y in xrange(self.cycle_fake_B.size[1]):
+            for x in xrange(self.cycle_fake_B.size[0]):
+                if pixdata[x, y] != (0, 0, 0, 255):
+                    pixdata[x, y] = (255, 255, 255, 255)
+
         self.cycle_masked_fake_B = self.cycle_fake_B*self.cycle_att_A + self.masked_fake_A*(1-self.cycle_att_A)
 
         # just for visualization
