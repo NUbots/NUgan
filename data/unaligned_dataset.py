@@ -66,6 +66,22 @@ class UnalignedDataset(BaseDataset):
         A_img = Image.open(A_path).convert('RGB')
         B_img = Image.open(B_path).convert('RGB')
         
+        width, height = A_img.size
+
+        # Yellow is high RED GREEN low BLUE
+        # Red is high RED low GREEN BLUE
+        # Green is high GREEN low RED BLUE
+
+        for x in range(width):
+            for y in range(height):
+                current_color = A_img.getpixel((x, y))
+                if current_color[0] > 50 and current_color[1] > 50 and current_color[2] < 50:
+                    A_img.putpixel((x,y), current_color + noise(true, true, false)) # add noise to yellow
+                elif current_color[0] > 50 and current_color[1] < 50 and current_color[2] < 50:
+                    A_img.putpixel((x,y), current_color + noise(true, false, false)) # add noise to red
+                elif current_color[0] < 50 and current_color[1] > 50 and current_color[2] < 50:
+                    A_img.putpixel((x,y), current_color + noise(true, false, false)) # add noise to green
+
         btoA = self.opt.direction == 'BtoA'
         input_nc = self.opt.output_nc if btoA else self.opt.input_nc
 
@@ -100,3 +116,14 @@ class UnalignedDataset(BaseDataset):
         we take a maximum of
         """
         return max(self.A_size, self.B_size)
+
+    def noise(bool red, bool green, bool blue):
+        randRed = random.randint(0, 255) if red else 0
+        randGreen = random.randint(0, 255) if green else 0
+        randBlue = random.randint(0, 255) if blue else 0
+        return (randRed, randGreen, randBlue)
+
+        
+        
+
+ a if a < b else b 
