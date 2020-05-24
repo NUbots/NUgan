@@ -117,7 +117,7 @@ class UnalignedDataset(BaseDataset):
         """
         return max(self.A_size, self.B_size)
 
-    def noise(bool red, bool green, bool blue):
+    def noise(red, green, blue):
         randRed = random.randint(0, 255) if red else 0
         randGreen = random.randint(0, 255) if green else 0
         randBlue = random.randint(0, 255) if blue else 0
