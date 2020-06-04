@@ -65,29 +65,6 @@ class UnalignedDataset(BaseDataset):
         B_path = self.B_paths[index_B]
         A_img = Image.open(A_path).convert('RGB')
         B_img = Image.open(B_path).convert('RGB')
-        
-        width, height = A_img.size
-
-        # Yellow is high RED GREEN low BLUE
-        # Red is high RED low GREEN BLUE
-        # Green is high GREEN low RED BLUE
-
-        for x in range(width):
-            for y in range(height):
-                current_color = A_img.getpixel((x, y))
-                if current_color[0] > 50 and current_color[1] > 50 and current_color[2] < 50:
-                    red, green, blue = self.noise(1, 1, 0)
-                    A_img.putpixel((x,y), (current_color[0] - red, current_color[1] - green, current_color[2] - blue)) # add noise to yellow
-                elif current_color[0] > 50 and current_color[1] < 50 and current_color[2] < 50:
-                    red, green, blue = self.noise(1, 0, 0)
-                    A_img.putpixel((x,y), (current_color[0] - red, current_color[1] - green, current_color[2] - blue)) # add noise to red
-                elif current_color[0] < 50 and current_color[1] > 50 and current_color[2] < 50:
-                    red, green, blue = self.noise(0, 1, 0)
-                    A_img.putpixel((x,y), (current_color[0] - red, current_color[1] - green, current_color[2] - blue)) # add noise to white
-                elif current_color[0] > 50 and current_color[1] > 50 and current_color[2] > 50:
-                    red, green, blue = self.noise(1, 1, 1)
-                    A_img.putpixel((x,y), (current_color[0] - red, current_color[1] - green, current_color[2] - blue)) # add noise to green
-                
 
         btoA = self.opt.direction == 'BtoA'
         input_nc = self.opt.output_nc if btoA else self.opt.input_nc
@@ -112,9 +89,11 @@ class UnalignedDataset(BaseDataset):
                 else: 
                     Att_img.putpixel((x,y), (0,0,0))
 
-        ATT=self.transform_Att(Att_img)
+        Att_img_b = Image.open('./datasets/soccer/white.png').convert('RGB')
+        ATT_B = self.transform_Att(Att_img_b)
+        ATT_A=self.transform_Att(Att_img)
 
-        return {'A': A, 'B': B, 'ATT': ATT, 'A_paths': A_path, 'B_paths': B_path}
+        return {'A': A, 'B': B, 'ATT_A': ATT_A, 'ATT_B': ATT_B, 'A_paths': A_path, 'B_paths': B_path}
 
     def __len__(self):
         """Return the total number of images in the dataset.
@@ -123,10 +102,3 @@ class UnalignedDataset(BaseDataset):
         we take a maximum of
         """
         return max(self.A_size, self.B_size)
-
-    def noise(self, red, green, blue):
-        rand = random.randint(0, 50)
-        randRed = rand if red else 0
-        randGreen = rand if green else 0
-        randBlue = rand if blue else 0
-        return (randRed, randGreen, randBlue)

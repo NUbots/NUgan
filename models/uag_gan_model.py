@@ -117,26 +117,27 @@ class UAGGANModel(BaseModel):
         AtoB = self.opt.direction == 'AtoB'
         self.real_A = input['A' if AtoB else 'B'].to(self.device)
         self.real_B = input['B' if AtoB else 'A'].to(self.device)
-        self.attention = input['ATT'].to(self.device)
+        self.attention_A = input['ATT_A'].to(self.device)
+        self.attention_B = input['ATT_B'].to(self.device)
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
         # G(A) -> B
-        self.att_A = self.attention
+        self.att_A = self.attention_A
         self.fake_B = self.netG_img_A(self.real_A)
         if not self.isTrain:
             self.att_A *= (self.att_A>self.opt.thresh).float()
         self.masked_fake_B = self.fake_B*self.att_A + self.real_A*(1-self.att_A)
         # G(B) -> A
-        self.att_B = self.netG_att_B(self.real_B)
+        self.att_B = self.attention_B
         self.fake_A = self.netG_img_B(self.real_B)
         if not self.isTrain:
             self.att_B *= (self.att_B>self.opt.thresh).float()
         self.masked_fake_A = self.fake_A*self.att_B + self.real_B*(1-self.att_B)
 
         # cycle G(G(A)) -> A
-        self.cycle_att_B = self.netG_att_B(self.masked_fake_B)
+        self.cycle_att_B = self.attention_B
         self.cycle_fake_A = self.netG_img_B(self.masked_fake_B)
         self.cycle_masked_fake_A = self.cycle_fake_A*self.cycle_att_B + self.masked_fake_B*(1-self.cycle_att_B)
         # cycle G(G(B)) -> B
@@ -215,8 +216,8 @@ class UAGGANModel(BaseModel):
         self.forward()      # compute fake images and reconstruction images.
         # G_A and G_B
         nets = [self.netD_A, self.netD_B]
-        if epoch > 60 and self.opt.use_early_stopping:
-            nets += [self.netG_att_A, self.netG_att_B] # Ds require no gradients when optimizing Gs
+        # if epoch > 60 and self.opt.use_early_stopping:
+            # nets += [self.netG_att_A, self.netG_att_B] # Ds require no gradients when optimizing Gs
         self.set_requires_grad(nets, False)
         self.optimizer_G.zero_grad()  # set G_A and G_B's gradients to zero
         self.backward_G()             # calculate gradients for G_A and G_B
