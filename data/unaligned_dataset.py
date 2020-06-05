@@ -89,7 +89,7 @@ class UnalignedDataset(BaseDataset):
                 else: 
                     Att_img.putpixel((x,y), (0,0,0))
 
-        Att_img_b = Image.open('./datasets/soccer/white.png').convert('RGB')
+        Att_img_b = Image.open('./datasets/white.png').convert('RGB')
         ATT_B = self.transform_Att(Att_img_b)
         ATT_A=self.transform_Att(Att_img)
 
