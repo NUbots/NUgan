@@ -4,6 +4,10 @@ A Pytorch implementation of "Unsupervised Attention-Guided Image-to-Image Transl
 
 This Attention-Guided CycleGAN maps segmentation images to real images.
 
+### Acknowledgments
+
+This code is largely taken from [yhlleo's UAGGAN repository](https://github.com/yhlleo/uaggan) which is based on [junyanz's pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
+
 ### Changes
 
 This implementation utilises the Attention portion of the code for our purposes with segmentation images. Rather than training a Neural Network to create the Attention masks, we create the Attention mask for the segmentation image from the segmentation image. Since the purpose of using Attention is to focus on the classified portions of the image and ignore the background (labeled as black) we can use this image to make the mask. The preprocessing creates an Attention mask by copying the segmentation image and colouring all non-black pixels white. For the real images, we have no way of doing this since these are unpaired images. We set the Attention mask for the real image to all white.
@@ -38,28 +42,34 @@ The realTest folder will contain the real images you want to test on.
 
 ### Usage
 
+#### Linux
+
 - Training
 
-```
-sh ./scripts/train_soccer.sh <gpu_id>
-```
+  ```bash
+  sh ./scripts/train_soccer.sh <gpu_id> <batch_size>
+  ```
 
-or
+- Testing
 
-```
-nohup sh -u ./scripts/train_soccer.sh <gpu_id> > uag.log &
-```
+  ```bash
+  sh ./scripts/test_soccer.sh <gpu_id>
+  ```
 
-- Test
+#### Windows
 
-```
-sh ./scripts/test_soccer.sh <gpu_id>
-```
+- Training
+
+  ```bash
+  ./scripts/train_soccer.bat <gpu_id> <batch_size>
+  ```
+
+- Testing
+
+  ```bash
+  ./scripts/test_soccer.bat <gpu_id>
+  ```
 
 ### Mapping results
 
 TODO: Add soccer results
-
-### Acknowledgment
-
-This code is largely taken from [yhlleo's UAGGAN repository](https://github.com/yhlleo/uaggan) which is based on [junyanz's pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
