@@ -1,0 +1,9 @@
+# Untracked
+datasets/*
+checkpoints/*
+results*
+__pycache__
+
+# Tracked
+!datasets/white.png
+!datasets/generate_noise.py
