@@ -1,11 +1,10 @@
-:: train_soccer.bat [GPU_ID] [BATCH_SIZE]
+:: train_soccer.bat [GPU_ID] [BATCH_SIZE] [NAME]
 
-if [%1]==[] SET GPU_ID=-1
-else SET GPU_ID=%1
-if [%2]==[] SET BATCH_SIZE=1 
-else SET BATCH_SIZE=%2
-if [%3]==[] SET NAME=soccer 
-else SET NAME=%2
+ECHO OFF
+
+IF "%~1"=="" ( SET GPU_ID=-1 ) ELSE SET GPU_ID=%1
+IF "%~2"=="" ( SET BATCH_SIZE=1 ) ELSE SET BATCH_SIZE=%2
+IF "%~3"=="" ( SET NAME=soccer ) ELSE SET NAME=%3
 
 python train.py^
  --dataroot ./datasets/soccer^
