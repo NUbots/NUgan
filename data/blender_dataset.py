@@ -5,7 +5,7 @@ from PIL import Image
 import random
 
 
-class UnalignedDataset(BaseDataset):
+class BlenderDataset(BaseDataset):
     """
     This dataset class can load unaligned/unpaired datasets.
 
@@ -94,7 +94,7 @@ class UnalignedDataset(BaseDataset):
                 else: 
                     A_seg_img.putpixel((x,y), (0,0,0))
 
-        ATT_A = self.transform_Att(A_seg_img)
+        ATT_A = self.transform_A_seg(A_seg_img)
 
         return {'A': A, 'B': B, 'ATT_A': ATT_A, 'A_paths': A_path, 'B_paths': B_path}
 

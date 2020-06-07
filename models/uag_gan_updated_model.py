@@ -5,7 +5,7 @@ from .base_model import BaseModel
 from . import networks 
 from . import uag_networks as uag
 
-class UAGGANModel(BaseModel):
+class UAGGANUPDATEDModel(BaseModel):
     '''
       An implement of the UAGGAN model.
   
@@ -28,27 +28,12 @@ class UAGGANModel(BaseModel):
         # specify the training losses you want to print out. The training/test scripts will call <BaseModel.get_current_losses>
         self.loss_names = ['D_A', 'D_B', 'G_A', 'G_B', 'cycle_A', 'cycle_B']
         self.visual_names = ['real_A', 'att_A_viz', 'fake_B', 'masked_fake_B', 
-                             'cycle_fake_B', 'cycle_fake_A', 'cycle_masked_fake_A']
+                             'real_B', 'fake_A']
         if self.isTrain:
-            self.model_names = ['G_att_A', 'G_att_B', 'G_img_A', 'G_img_B', 'D_A', 'D_B']
+            self.model_names = ['G_img_A', 'G_img_B', 'D_A', 'D_B']
         else:  # during test time, only load Gs
-            self.model_names = ['G_att_A', 'G_att_B', 'G_img_A', 'G_img_B']
+            self.model_names = ['G_img_A', 'G_img_B']
         
-
-        self.netG_att_A = uag.define_net_att(opt.input_nc,
-                                             opt.ngf,
-                                             norm=opt.norm,
-                                             init_type=opt.init_type,
-                                             init_gain=opt.init_gain,
-                                             gpu_ids=opt.gpu_ids)
-
-        self.netG_att_B = uag.define_net_att(opt.input_nc,
-                                             opt.ngf,
-                                             norm=opt.norm,
-                                             init_type=opt.init_type,
-                                             init_gain=opt.init_gain,
-                                             gpu_ids=opt.gpu_ids)
-
         self.netG_img_A = uag.define_net_img(opt.input_nc,
                                              opt.output_nc,
                                              opt.ngf,
@@ -93,8 +78,6 @@ class UAGGANModel(BaseModel):
             self.criterionCycle = torch.nn.L1Loss()
             # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
             self.optimizer_G = torch.optim.Adam(itertools.chain(
-                    self.netG_att_A.parameters(), 
-                    self.netG_att_B.parameters(),
                     self.netG_img_A.parameters(), 
                     self.netG_img_B.parameters()), 
                 lr=opt.lr, betas=(opt.beta1, 0.999))
@@ -162,7 +145,7 @@ class UAGGANModel(BaseModel):
         return loss_D
 
     def backward_D(self):
-                if self.opt.use_mask_for_D:
+        if self.opt.use_mask_for_D:
             masked_fake_B, att_A = self.masked_fake_B_pool.query(self.masked_fake_B, self.att_A)
             masked_fake_B *= att_A
         else:
@@ -171,7 +154,7 @@ class UAGGANModel(BaseModel):
 
         if self.opt.use_mask_for_D:
             masked_fake_A, att_A = self.masked_fake_A_pool.query(self.cycle_masked_fake_A, self.att_A)
-            masked_fake_A *= att_B
+            masked_fake_A *= att_A
         else:
             masked_fake_A = self.masked_fake_A_pool.query(self.cycle_masked_fake_A)
         self.loss_D_B = self.backward_D_basic(self.netD_B, self.real_A, masked_fake_A)
@@ -204,8 +187,6 @@ class UAGGANModel(BaseModel):
         self.forward()      # compute fake images and reconstruction images.
         # G_A and G_B
         nets = [self.netD_A, self.netD_B]
-        # if epoch > 60 and self.opt.use_early_stopping:
-            # nets += [self.netG_att_A, self.netG_att_B] # Ds require no gradients when optimizing Gs
         self.set_requires_grad(nets, False)
         self.optimizer_G.zero_grad()  # set G_A and G_B's gradients to zero
         self.backward_G()             # calculate gradients for G_A and G_B
