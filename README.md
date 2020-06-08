@@ -6,7 +6,9 @@ This Attention-Guided CycleGAN maps segmentation images to real images.
 
 ### Acknowledgments
 
-This code is largely taken from [yhlleo's UAGGAN repository](https://github.com/yhlleo/uaggan) which is based on [junyanz's pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
+This code is based on [yhlleo's UAGGAN repository](https://github.com/yhlleo/uaggan), which is based on the TensorFlow implementation by [Mejjati et al.](https://github.com/AlamiMejjati/Unsupervised-Attention-guided-Image-to-Image-Translation). This code accompanies the paper by [Mejjati et al.](https://arxiv.org/pdf/1806.02311.pdf).
+
+This work is based on the work by [Zhu, Park, et al.](https://arxiv.org/pdf/1703.10593.pdf) along with the implementation at [junyanz's pytorch-CycleGAN-and-pix2pix](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
 
 ### Changes
 
