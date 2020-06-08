@@ -95,7 +95,7 @@ class BlenderDataset(BaseDataset):
                     A_seg_img.putpixel((x,y), (0,0,0))
 
         ATT_A = self.transform_A_seg(A_seg_img)
-
+        ATT_A = ATT_A*0.5 + 0.5
         return {'A': A, 'B': B, 'ATT_A': ATT_A, 'A_paths': A_path, 'B_paths': B_path}
 
     def __len__(self):
