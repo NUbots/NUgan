@@ -100,24 +100,24 @@ class UAGGANUPDATEDModel(BaseModel):
         self.real_A = input['A' if AtoB else 'B'].to(self.device)
         self.real_B = input['B' if AtoB else 'A'].to(self.device)
         self.att_A = input['ATT_A'].to(self.device)
-        self.att_A = self.att_A*0.5 + 0.5
         self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
         # G(A) -> B
         self.fake_B = self.netG_img_A(self.real_A)  # our fake B is real Blender input into the generator
-        self.masked_fake_B = self.fake_B*self.att_A + self.real_A*(1-self.att_A)    # here we use the attention image to add back in the old background 
+        self.masked_fake_B = self.fake_B*self.att_A + self.real_A*(1.0-self.att_A)    # here we use the attention image to add back in the old background 
         # G(B) -> A
         self.fake_A = self.netG_img_B(self.real_B)  # the fake A is the input of B into the generator
         # cycle G(G(A)) -> A
         self.cycle_fake_A = self.netG_img_B(self.masked_fake_B) # create a fake A from the fake B (masked) we got
-        self.cycle_masked_fake_A = self.cycle_fake_A*self.att_A + self.masked_fake_B*(1-self.att_A)
+        self.cycle_masked_fake_A = self.cycle_fake_A*self.att_A + self.masked_fake_B*(1.0-self.att_A)
         # cycle G(G(B)) -> B
         self.cycle_fake_B = self.netG_img_A(self.cycle_masked_fake_A) # create a fake B from the fake A (we can't mask)
-        self.cycle_masked_fake_B = self.cycle_fake_B*self.att_A + self.cycle_masked_fake_A*(1-self.att_A)
+        self.cycle_masked_fake_B = self.cycle_fake_B*self.att_A + self.cycle_masked_fake_A*(1.0-self.att_A)
         # just for visualization
         self.att_A_viz = (self.att_A-0.5)/0.5
+        self.att_inv = ((1-self.att_A)-0.5)/0.5
 
     def backward_D_basic(self, netD, real, fake):
         """Calculate GAN loss for the discriminator
@@ -162,13 +162,9 @@ class UAGGANUPDATEDModel(BaseModel):
         lambda_B = self.opt.lambda_B
 
         # GAN loss D_A(G(A))
-        masked_fake_B = self.masked_fake_B
-        if self.opt.use_mask_for_D:
-            masked_fake_B *= self.att_A
         self.loss_G_A = self.criterionGAN(self.netD_A(self.masked_fake_B), True)
         # GAN loss D_B(G(B))
         masked_fake_A = self.fake_A
-
         self.loss_G_B = self.criterionGAN(self.netD_B(masked_fake_A), True)
         # Forward cycle loss || G_B(G_A(A)) - A||
         self.loss_cycle_A = self.criterionCycle(self.cycle_fake_A, self.real_A) * lambda_A
