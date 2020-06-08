@@ -8,7 +8,8 @@ python test.py^
  --gpu_ids %GPU_ID%^
  --dataroot ./datasets/soccer^
  --name %NAME%^
- --model uag_gan^
+ --model uag_gan_updated^
+ --dataset_mode blender^
  --phase test^
  --num_test 15^
  --thresh 0.1^
