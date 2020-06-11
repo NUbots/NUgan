@@ -3,7 +3,7 @@ from . import networks
 
 
 class TestModel(BaseModel):
-    """ This TesteModel can be used to generate CycleGAN results for only one direction.
+    """ This TestModel can be used to generate CycleGAN results for only one direction.
     This model will automatically set '--dataset_mode single', which only loads the images from one collection.
 
     See the test instruction for more details.
@@ -29,7 +29,7 @@ class TestModel(BaseModel):
         return parser
 
     def __init__(self, opt):
-        """Initialize the pix2pix class.
+        """Initialize the class.
 
         Parameters:
             opt (Option class)-- stores all the experiment flags; needs to be a subclass of BaseOptions
@@ -39,7 +39,12 @@ class TestModel(BaseModel):
         # specify the training losses you want to print out. The training/test scripts  will call <BaseModel.get_current_losses>
         self.loss_names = []
         # specify the images you want to save/display. The training/test scripts  will call <BaseModel.get_current_visuals>
-        self.visual_names = ['real_A', 'fake_B']
+        # if we are in test mode, visualise real A
+        # if in generate mode, visualise only fake B
+        if (opt.phase == 'test'):
+            self.visual_names = ['real_A', 'fake_B']
+        else:
+            self.visual_names = ['fake_B']
         # specify the models you want to save to the disk. The training/test scripts will call <BaseModel.save_networks> and <BaseModel.load_networks>
         self.model_names = ['G' + opt.model_suffix]  # only generator is needed.
         self.netG = networks.define_G(opt.input_nc, opt.output_nc, opt.ngf, opt.netG,
