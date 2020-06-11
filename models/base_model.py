@@ -176,7 +176,7 @@ class BaseModel(ABC):
         """
         for name in self.model_names:
             if isinstance(name, str):
-                if (opt.from_base):
+                if ((self.isTrain and opt.from_base) or opt.name == 'soccer_base'):
                     load_filename = 'base_net_%s.pth' % (name)
                     print(load_filename)
                     load_path = os.path.join('checkpoints/soccer_base', load_filename)
