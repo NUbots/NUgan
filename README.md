@@ -158,3 +158,8 @@ The output will be in `results/NAME/generate_latest`.
 Each row contains, from left to right: semi-synthetic Blender image, fake realistic image, masked fake realistic image, and attention mask.
 
 ![Results of the transfer between semi-synthetic images and real images.](docs/base_results.png "Each row contains a semi-synthetic image, fake realistic image, masked fake realistic image, and attention mask.")
+
+Left images are semi-synthetic Blender images, right images are fake realistic images.
+
+![Results of the transfer between semi-synthetic images and real images.](docs/batch4results.png "Left images are semi-synthetic Blender images, right images are fake realistic images.")
+![Results of the transfer between semi-synthetic images and real images.](docs/batch4results2.png "Left images are semi-synthetic Blender images, right images are fake realistic images.")
