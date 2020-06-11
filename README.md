@@ -1,4 +1,4 @@
-# NUcyclegan
+# NUgan
 
 A PyTorch implementation of a CycleGAN that uses attention masks to remove the consideration of the background from the training. Attention masks are created using corresponding segmentation images.
 
