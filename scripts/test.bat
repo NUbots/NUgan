@@ -6,7 +6,7 @@
 @ECHO OFF
 
 IF "%~1"=="" ( SET GPU_ID=0 ) ELSE SET GPU_ID=%~1
-IF "%~2"=="" ( SET NAME=soccer ) ELSE SET NAME=%~2
+IF "%~2"=="" ( SET NAME=soccer_base ) ELSE SET NAME=%~2
 IF "%~3"=="" ( SET DATAROOT= ./datasets/soccer) ELSE SET DATAROOT=%~3
 
 python test.py^
