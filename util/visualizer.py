@@ -53,6 +53,32 @@ def save_images(webpage, visuals, image_path, aspect_ratio=1.0, width=256):
         links.append(image_name)
     webpage.add_images(ims, txts, links, width=width)
 
+def generate_save_images(img_dir, visuals, image_path, aspect_ratio=1.0, width=256):
+    """Save images to the disk.
+
+    Parameters:
+        visuals (OrderedDict)    -- an ordered dictionary that stores (name, images (either tensor or numpy) ) pairs
+        image_path (str)         -- the string is used to create image paths
+        aspect_ratio (float)     -- the aspect ratio of saved images
+        width (int)              -- the images will be resized to width x width
+
+    This function will save images stored in 'results'.
+    """
+    short_path = ntpath.basename(image_path[0])
+    name = os.path.splitext(short_path)[0]
+
+    for label, im_data in visuals.items():
+        im = util.tensor2im(im_data)
+        image_name = '%s_%s.png' % (name, label)
+        save_path = os.path.join(img_dir, image_name)
+        h, w, _ = im.shape
+        im = Image.fromarray(im)
+        if aspect_ratio > 1.0:
+            im = im.resize((int(w * aspect_ratio), h), Image.BICUBIC)
+        if aspect_ratio < 1.0:
+            im = im.resize((w, int(h / aspect_ratio)), Image.BICUBIC)
+        im = np.array(im, dtype='uint8')
+        util.save_image(im, save_path)
 
 class Visualizer():
     """This class includes several functions that can display/save images and print/save logging information.
