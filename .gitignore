@@ -1,5 +1,13 @@
 # Untracked
-datasets/*
-checkpoints/*
-results*
+/datasets
+/checkpoints
+/results
 __pycache__
+*.pyc
+
+# Track
+!/checkpoints/soccer_base/*
+
+# Untrack opt
+
+/checkpoints/soccer_base/opt.txt
