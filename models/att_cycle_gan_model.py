@@ -5,7 +5,7 @@ from .base_model import BaseModel
 from . import networks 
 from . import networks as uag
 
-class UAGGANUPDATEDModel(BaseModel):
+class AttCycleGanModel(BaseModel):
     '''
       An implement of the UAGGAN model.
   
