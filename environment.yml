@@ -1,4 +1,4 @@
-name: uag-transfer
+name: cycle-gan
 channels:
 - peterjc123
 - menpo
