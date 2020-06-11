@@ -15,8 +15,8 @@ python3 test.py \
  --name "${NAME}" \
  --model test \
  --dataset_mode blender \
+ --model att_cycle_gan \
  --phase test \
- --model_suffix _A \
  --no_dropout \
  --num_test 15 \
  --aspect_ratio 1.25 \

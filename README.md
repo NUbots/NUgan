@@ -1,8 +1,8 @@
 # Masked CycleGAN
 
-A Pytorch implementation of "Unsupervised Attention-Guided Image-to-Image Translation", NIPS 2018, [[Paper]](https://arxiv.org/pdf/1806.02311.pdf) | [[TF code]](https://github.com/AlamiMejjati/Unsupervised-Attention-guided-Image-to-Image-Translation) from [yhlleo's UAGGAN repository](https://github.com/yhlleo/uaggan) altered for use in dataset creation for machine learning for vision.
+A PyTorch implementation of a CycleGAN that uses masks to remove the consideration of the background of a soccer field image from the training. The background is removed based on corresponding segmentation images. 
 
-This Masked CycleGAN maps semi-synthetic images to real images. It uses output from [NUpbr](https://github.com/NUbots/NUpbr) to create real images. 
+The Masked CycleGAN maps semi-synthetic images to real images. It uses output from [NUpbr](https://github.com/NUbots/NUpbr) to create real images. 
 
 ### Acknowledgments
 
@@ -17,6 +17,8 @@ This CycleGAN maps semi-synthetic soccer field images to real soccer field image
 The repository contains a pretrained base model that will map semi-synthetic soccer field images to real soccer field images. This model can then be fine-tuned to a specific field by training from the base model with a dataset of real images of a specific field. When training is run, without specifying to continue an existing fine-tuning trained model, the pretrained base will be loaded. 
 
 ### Prerequisites
+
+This code has been tested on Windows with Anaconda and Linux Mint.
 
 Clone the repository
 
@@ -75,7 +77,7 @@ Open a new window. In Windows, run
 In other OS, such as Linux, run
 
 ```sh
-"sh scripts/train.sh <GPU_ID> <BATCH_SIZE> <NAME> <DATAROOT> <CONT> <EPOCHCOUNT>
+sh scripts/train.sh <GPU_ID> <BATCH_SIZE> <NAME> <DATAROOT> <CONT> <EPOCHCOUNT>
 ```
 
 The options are as follows
@@ -140,5 +142,7 @@ The options are as specified in the Testing section.
 The output will be in `results/NAME/generate_latest`.
 
 ### Mapping results
+
+Each row contains, from left to right: semi-synthetic Blender image, fake realistic image, masked fake realistic image, and attention mask.
 
 ![Results of the transfer between semi-synthetic images and real images.](docs/base_results.png 'Each row contains a semi-synthetic image, fake realistic image, masked fake realistic image, and attention mask.')
