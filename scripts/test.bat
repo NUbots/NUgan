@@ -14,7 +14,7 @@ python test.py^
  --dataroot %DATAROOT%^
  --name %NAME%^
  --model test^
- --dataset_mode single^
+ --dataset_mode blender^
  --phase test^
  --model_suffix _A^
  --no_dropout^
