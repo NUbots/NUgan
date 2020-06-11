@@ -15,7 +15,7 @@ python test.py^
  --name %NAME%^
  --model test^
  --dataset_mode blender^
- --model att-cycle-gan^
+ --model att_cycle_gan^
  --phase test^
  --no_dropout^
  --num_test 15^

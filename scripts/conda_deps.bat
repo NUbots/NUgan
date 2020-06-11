@@ -1,5 +1,5 @@
 @ECHO OFF
 
-conda install numpy pyyaml mkl mkl-include setuptools cmake cffi typing
-conda install pytorch torchvision -c pytorch # add cuda90 if CUDA 9
-conda install visdom dominate -c conda-forge # install visdom and dominate
+CALL conda install numpy pyyaml mkl mkl-include setuptools cmake cffi typing
+CALL conda install pytorch torchvision -c pytorch 
+CALL conda install visdom dominate -c conda-forge 

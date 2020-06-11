@@ -8,9 +8,11 @@
 
 @ECHO OFF
 
+SET timestamp=%date:~4,2%%date:~7,2%%date:~10,4%_%time:~0,2%%time:~3,2%%time:~6,2%
+
 IF "%~1"=="" ( SET GPU_ID=-1 ) ELSE SET GPU_ID=%~1
 IF "%~2"=="" ( SET BATCH_SIZE=1 ) ELSE SET BATCH_SIZE=%~2
-IF "%~3"=="" ( SET NAME=soccer_%DATE% ) ELSE SET NAME=%~3
+IF "%~3"=="" ( SET NAME=soccer_%timestamp% ) ELSE SET NAME=%~3
 IF "%~4"=="" ( SET DATAROOT= ./datasets/soccer) ELSE SET DATAROOT=%~4
 IF "%~5"=="" ( SET CONT=0 ) ELSE SET CONT=%~5
 IF "%~6"=="" ( SET EPOCHCOUNT=1 ) ELSE SET CONT=%~6
